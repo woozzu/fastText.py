@@ -20,6 +20,14 @@ README.rst: README.md
 upload: README.rst
 	python setup.py sdist upload
 
+upload-to-pypitest: README.rst
+	python setup.py sdist upload -r pypitest
+.PHONY: upload-to-pypitest
+
+install-from-pypitest::
+	pip install -U --no-cache-dir -i https://testpypi.python.org/pypi fasttext
+.PHONY: install-from-pypitest
+
 install-dev: README.rst
 	python setup.py develop
 .PHONY: install-dev
