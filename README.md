@@ -174,12 +174,70 @@ Train & load skipgram model
 model = fasttext.skipgram(params)
 ```
 
+List of available `params` and their default value:
+
+```
+input          training file path (required)
+output         output file path (required)
+lr             learning rate [0.05]
+lr_update_rate change the rate of updates for the learning rate [100]
+dim            size of word vectors [100]
+ws             size of the context window [5]
+epoch          number of epochs [5]
+min_count      minimal number of word occurences [5]
+neg            number of negatives sampled [5]
+word_ngrams    max length of word ngram [1]
+loss           loss function {ns, hs, softmax} [ns]
+bucket         number of buckets [2000000]
+minn           min length of char ngram [3]
+maxn           max length of char ngram [6]
+thread         number of threads [12]
+t              sampling threshold [0.0001]
+silent         disable the log output from the C++ extension [1]
+
+```
+
+Example usage:
+
+```python
+model = fasttext.skipgram('train.txt', 'model', lr=0.1, dim=300)
+```
+
 ### CBOW model
 
 Train & load CBOW model
 
 ```python
 model = fasttext.cbow(params)
+```
+
+List of available `params` and their default value:
+
+```
+input          training file path (required)
+output         output file path (required)
+lr             learning rate [0.05]
+lr_update_rate change the rate of updates for the learning rate [100]
+dim            size of word vectors [100]
+ws             size of the context window [5]
+epoch          number of epochs [5]
+min_count      minimal number of word occurences [5]
+neg            number of negatives sampled [5]
+word_ngrams    max length of word ngram [1]
+loss           loss function {ns, hs, softmax} [ns]
+bucket         number of buckets [2000000]
+minn           min length of char ngram [3]
+maxn           max length of char ngram [6]
+thread         number of threads [12]
+t              sampling threshold [0.0001]
+silent         disable the log output from the C++ extension [1]
+
+```
+
+Example usage:
+
+```python
+model = fasttext.cbow('train.txt', 'model', lr=0.1, dim=300)
 ```
 
 ### Load pre-trained model
@@ -221,6 +279,36 @@ Train & load the classifier
 classifier = fasttext.supervised(params)
 ```
 
+List of available `params` and their default value:
+
+```
+input          training file path (required)
+output         output file path (required)
+label_prefix   label prefix ['__label__']
+lr             learning rate [0.05]
+lr_update_rate change the rate of updates for the learning rate [100]
+dim            size of word vectors [100]
+ws             size of the context window [5]
+epoch          number of epochs [5]
+min_count      minimal number of word occurences [1]
+neg            number of negatives sampled [5]
+word_ngrams    max length of word ngram [1]
+loss           loss function {ns, hs, softmax} [softmax]
+bucket         number of buckets [2000000]
+minn           min length of char ngram [3]
+maxn           max length of char ngram [6]
+thread         number of threads [12]
+t              sampling threshold [0.0001]
+silent         disable the log output from the C++ extension [1]
+
+```
+
+Example usage:
+
+```python
+classifier = fasttext.supervised('train.txt', 'model', label_prefix='__myprefix__',
+                                 thread=4)
+```
 
 ### Load pre-trained classifier
 
