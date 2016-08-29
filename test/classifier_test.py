@@ -102,8 +102,8 @@ class TestClassifierModel(unittest.TestCase):
 
     def test_load_invalid_classifier_model(self):
         # Make sure we are throwing an exception
-        with self.assertRaises(ValueError):
-            ft.load_model('/path/to/invalid', label_prefix='__label__')
+        self.assertRaises(ValueError, ft.load_model, '/path/to/invalid',
+                label_prefix='__label__')
 
     def test_train_classifier_model_default(self):
         default_args = default_params.read_file(params_txt)

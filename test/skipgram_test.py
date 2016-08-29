@@ -49,8 +49,7 @@ class TestSkipgramModel(unittest.TestCase):
 
     def test_load_invalid_skipgram_model(self):
         # Make sure we are throwing an exception
-        with self.assertRaises(ValueError):
-            ft.load_model('/path/to/invalid')
+        self.assertRaises(ValueError, ft.load_model, '/path/to/invalid')
 
     def test_train_skipgram_model_default(self):
         default_args = default_params.read_file(params_txt)
