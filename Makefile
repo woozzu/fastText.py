@@ -1,7 +1,7 @@
 
 all: install test
 
-test: test-skipgram test-cbow test-classifier test-default-params
+test: test-skipgram test-cbow test-classifier
 
 buildext:
 	python setup.py build_ext --inplace
@@ -41,7 +41,12 @@ test/skipgram_params_test.bin:
 		-minCount 1 -neg 5 -loss ns -bucket 2000000 -minn 3 -maxn 6 \
 		-thread 4 -lrUpdateRate 100 -t 1e-4 >> /dev/null
 
-test-skipgram: pre-test fasttext/cpp/fasttext test/skipgram_params_test.bin
+# Generate default value of skipgram command from fasttext(1)
+test/skipgram_default_params_result.txt:
+	$(MAKE) skipgram_default_params_result.txt --directory test/
+
+test-skipgram: pre-test fasttext/cpp/fasttext test/skipgram_params_test.bin \
+			   test/skipgram_default_params_result.txt
 	python test/skipgram_test.py --verbose
 
 # Test for cbow model
@@ -53,7 +58,12 @@ test/cbow_params_test.bin:
 		-minCount 1 -neg 5 -loss ns -bucket 2000000 -minn 3 -maxn 6 \
 		-thread 4 -lrUpdateRate 100 -t 1e-4 >> /dev/null
 
-test-cbow: pre-test fasttext/cpp/fasttext test/cbow_params_test.bin
+# Generate default value of cbow command from fasttext(1)
+test/cbow_default_params_result.txt:
+	$(MAKE) cbow_default_params_result.txt --directory test/
+
+test-cbow: pre-test fasttext/cpp/fasttext test/cbow_params_test.bin \
+		   test/cbow_default_params_result.txt
 	python test/cbow_test.py --verbose
 
 # Test for classifier
@@ -81,13 +91,14 @@ test/classifier_pred_k_result.txt: test/classifier.bin
 		test/classifier_pred_test.txt 5 > \
 		test/classifier_pred_k_result.txt
 
+# Generate default value of classifier command from fasttext(1)
+test/classifier_default_params_result.txt:
+	$(MAKE) classifier_default_params_result.txt --directory test/
+
 test-classifier: pre-test fasttext/cpp/fasttext test/classifier.bin \
 				 test/classifier_test_result.txt \
 				 test/classifier_pred_result.txt \
-				 test/classifier_pred_k_result.txt
+				 test/classifier_pred_k_result.txt \
+				 test/classifier_default_params_result.txt
 	python test/classifier_test.py --verbose
 
-# Default params test
-test-default-params:
-	$(MAKE) --directory test
-	python test/default_params_test.py --verbose
