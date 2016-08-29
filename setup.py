@@ -43,6 +43,7 @@ setup(
     long_description=open('README.rst', 'r').read(),
     license='BSD 3-Clause License',
     packages=['fasttext'],
+    data_files=[('fasttext', ['fasttext/VERSION'])],
     ext_modules = cythonize(extensions),
     install_requires=[
         'numpy>=1',
