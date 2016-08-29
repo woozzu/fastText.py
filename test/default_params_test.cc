@@ -6,6 +6,7 @@
 int main(int argc, char **argv)
 {
     Args args;
+    args.parseArgs(argc, argv);
     std::cout << "lr " << args.lr << std::endl;
     std::cout << "dim " << args.dim << std::endl;
     std::cout << "ws " << args.ws << std::endl;

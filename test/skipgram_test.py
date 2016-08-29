@@ -9,9 +9,13 @@ from os import path
 
 import fasttext as ft
 
-skipgram_file = path.join(path.dirname(__file__), 'skipgram_params_test.bin')
-input_file = path.join(path.dirname(__file__), 'params_test.txt')
-output = path.join(path.dirname(__file__), 'generated_skipgram')
+import default_params
+
+test_dir = path.dirname(__file__)
+skipgram_file = path.join(test_dir, 'skipgram_params_test.bin')
+input_file = path.join(test_dir, 'params_test.txt')
+output = path.join(test_dir, 'generated_skipgram')
+params_txt = path.join(test_dir, 'skipgram_default_params_result.txt')
 
 # Test to make sure that skipgram interface run correctly
 class TestSkipgramModel(unittest.TestCase):
@@ -42,6 +46,31 @@ class TestSkipgramModel(unittest.TestCase):
         unicode_str = 'Καλημέρα'
         self.assertTrue(unicode_str in model.words)
         self.assertEqual(len(model[unicode_str]), model.dim)
+
+    def test_load_invalid_skipgram_model(self):
+        # Make sure we are throwing an exception
+        self.assertRaises(ValueError, ft.load_model, '/path/to/invalid')
+
+    def test_train_skipgram_model_default(self):
+        default_args = default_params.read_file(params_txt)
+        model = ft.skipgram(input_file, output)
+
+        # Make sure the default params of skipgram is equal
+        # to fasttext(1) default params
+        self.assertEqual(model.model_name, 'skipgram')
+        self.assertEqual(model.dim, int(default_args['dim']))
+        self.assertEqual(model.ws, int(default_args['ws']))
+        self.assertEqual(model.epoch, int(default_args['epoch']))
+        self.assertEqual(model.min_count, int(default_args['minCount']))
+        self.assertEqual(model.neg, int(default_args['neg']))
+        self.assertEqual(model.word_ngrams, int(default_args['wordNgrams']))
+        self.assertEqual(model.loss_name, default_args['loss'])
+        self.assertEqual(model.bucket, int(default_args['bucket']))
+        self.assertEqual(model.minn, int(default_args['minn']))
+        self.assertEqual(model.maxn, int(default_args['maxn']))
+        self.assertEqual(model.lr_update_rate,
+                float(default_args['lrUpdateRate']))
+        self.assertEqual(model.t, float(default_args['t']))
 
     def test_train_skipgram_model(self):
         # set params

@@ -9,15 +9,18 @@ from os import path
 
 import fasttext as ft
 
-current_dir = path.dirname(__file__)
-classifier_bin = path.join(current_dir, 'classifier.bin')
-input_file = path.join(current_dir, 'dbpedia.train')
-pred_file  = path.join(current_dir, 'classifier_pred_test.txt')
-output = path.join(current_dir, 'generated_classifier')
-test_result = path.join(current_dir, 'classifier_test_result.txt')
-pred_result = path.join(current_dir, 'classifier_pred_result.txt')
-pred_k_result = path.join(current_dir, 'classifier_pred_k_result.txt')
-test_file = path.join(current_dir, 'classifier_test.txt')
+import default_params
+
+test_dir = path.dirname(__file__)
+classifier_bin = path.join(test_dir, 'classifier.bin')
+input_file = path.join(test_dir, 'dbpedia.train')
+pred_file  = path.join(test_dir, 'classifier_pred_test.txt')
+output = path.join(test_dir, 'generated_classifier')
+test_result = path.join(test_dir, 'classifier_test_result.txt')
+pred_result = path.join(test_dir, 'classifier_pred_result.txt')
+pred_k_result = path.join(test_dir, 'classifier_pred_k_result.txt')
+test_file = path.join(test_dir, 'classifier_test.txt')
+params_txt = path.join(test_dir, 'classifier_default_params_result.txt')
 
 # To validate model are loaded correctly
 def read_labels_from_input(filename, label_prefix):
@@ -96,6 +99,33 @@ class TestClassifierModel(unittest.TestCase):
 
         # Make sure labels are loaded correctly
         self.assertTrue(sorted(model.labels) == sorted(labels))
+
+    def test_load_invalid_classifier_model(self):
+        # Make sure we are throwing an exception
+        self.assertRaises(ValueError, ft.load_model, '/path/to/invalid',
+                label_prefix='__label__')
+
+    def test_train_classifier_model_default(self):
+        default_args = default_params.read_file(params_txt)
+        model = ft.supervised(input_file, output)
+
+        # Make sure the default params of supervised is equal
+        # to fasttext(1) default params
+        self.assertEqual(model.model_name, 'supervised')
+        self.assertEqual(model.dim, int(default_args['dim']))
+        self.assertEqual(model.ws, int(default_args['ws']))
+        self.assertEqual(model.epoch, int(default_args['epoch']))
+        self.assertEqual(model.min_count, int(default_args['minCount']))
+        self.assertEqual(model.neg, int(default_args['neg']))
+        self.assertEqual(model.word_ngrams, int(default_args['wordNgrams']))
+        self.assertEqual(model.loss_name, default_args['loss'])
+        self.assertEqual(model.bucket, int(default_args['bucket']))
+        self.assertEqual(model.minn, int(default_args['minn']))
+        self.assertEqual(model.maxn, int(default_args['maxn']))
+        self.assertEqual(model.lr_update_rate,
+                float(default_args['lrUpdateRate']))
+        self.assertEqual(model.t, float(default_args['t']))
+        self.assertEqual(model.label_prefix, default_args['label'])
 
     def test_train_classifier(self):
         # set params
