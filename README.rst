@@ -395,35 +395,6 @@ Classifier have the following atributes & methods
 The param ``k`` for ``classifier.test`` and ``classifier.predict`` is
 optional, and equal to ``1`` by default.
 
-Params
-~~~~~~
-
-List of available ``params`` and their default value:
-
-::
-
-    For Skipgram, CBOW and Supervised model
-    input          training file path
-    output         output file path
-    lr             learning rate [0.05]
-    lr_update_rate change the rate of updates for the learning rate [100]
-    dim            size of word vectors [100]
-    ws             size of the context window [5]
-    epoch          number of epochs [5]
-    min_count      minimal number of word occurences [1]
-    neg            number of negatives sampled [5]
-    word_ngrams    max length of word ngram [1]
-    loss           loss function {ns, hs, softmax} [ns]
-    bucket         number of buckets [2000000]
-    minn           min length of char ngram [3]
-    maxn           max length of char ngram [6]
-    thread         number of threads [12]
-    t              sampling threshold [0.0001]
-    silent         disable the log output from the C++ extension [1]
-
-    For Supervised model only
-    label_prefix   Prefix of the label name [__label__]
-
 References
 ----------
 
