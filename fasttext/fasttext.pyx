@@ -143,14 +143,14 @@ def load_model(filename, label_prefix=''):
     if model_name == 'skipgram' or model_name == 'cbow':
         words = []
         # We build the dictionary here to support unicode characters
-        for i in xrange(model.get_nwords()):
-            word = model.get_word(i)
+        for i in xrange(model.dict_nwords()):
+            word = model.dict_get_word(i)
             words.append(word)
         return WordVectorModel(model, words)
     elif model_name == 'supervised':
         labels = []
-        for i in xrange(model.get_nlabels()):
-            label = model.get_label(i)
+        for i in xrange(model.dict_nlabels()):
+            label = model.dict_get_label(i)
             # Remove the prefix
             labels.append(label.replace(label_prefix, ''))
         return SupervisedModel(model, labels, label_prefix)

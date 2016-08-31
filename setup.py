@@ -26,6 +26,7 @@ extensions = [
             'fasttext/cpp/src/matrix.cc',
             'fasttext/cpp/src/model.cc',
             'fasttext/cpp/src/utils.cc',
+            'fasttext/cpp/src/fasttext.cc',
             'fasttext/cpp/src/vector.cc'
         ],
         language='c++',
