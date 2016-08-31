@@ -300,7 +300,7 @@ List of available ``params`` and their default value:
     input          training file path (required)
     output         output file path (required)
     label_prefix   label prefix ['__label__']
-    lr             learning rate [0.05]
+    lr             learning rate [0.1]
     lr_update_rate change the rate of updates for the learning rate [100]
     dim            size of word vectors [100]
     ws             size of the context window [5]
@@ -309,9 +309,9 @@ List of available ``params`` and their default value:
     neg            number of negatives sampled [5]
     word_ngrams    max length of word ngram [1]
     loss           loss function {ns, hs, softmax} [softmax]
-    bucket         number of buckets [2000000]
-    minn           min length of char ngram [3]
-    maxn           max length of char ngram [6]
+    bucket         number of buckets [0]
+    minn           min length of char ngram [0]
+    maxn           max length of char ngram [0]
     thread         number of threads [12]
     t              sampling threshold [0.0001]
     silent         disable the log output from the C++ extension [1]
