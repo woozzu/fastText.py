@@ -21,24 +21,6 @@ cdef extern from "cpp/src/dictionary.h":
         string getWord(int32_t)
         string getLabel(int32_t)
 
-# Because Dictionary doesn't have nulary constructor
-# We create a class wrapper with __cinit__ and __dealloc__ methods which are
-# guaranteed to be called exactly once upon creation and deletion of the Python
-# instance.
-# http://cython.readthedocs.io/en/latest/src/userguide/wrapping_CPlusPlus.html#create-cython-wrapper-class
-# cdef class DictionaryWrapper:
-#     cdef Dictionary* dictionary_ptr
-#
-#     def __cinit__(self, shared_ptr[Args] args):
-#         dictionary_ptr = new Dictionary(args)
-#
-#     def __dealloc__(self):
-#         del self.dictionary_ptr
-#
-#     def get_word(self, i):
-#         return self.dictioanry_ptr.getWord(i)
-
-
 cdef extern from "interface.h":
     cdef cppclass FastTextModel:
         FastTextModel()
