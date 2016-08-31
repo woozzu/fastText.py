@@ -3,7 +3,6 @@ cimport utils
 from interface cimport trainWrapper
 from interface cimport loadModelWrapper
 from interface cimport FastTextModel
-from interface cimport Dictionary
 
 # Python/C++ standart libraries
 from libc.stdlib cimport malloc, free
@@ -125,6 +124,8 @@ cdef class FastTextModelWrapper:
 # label_prefix is an optional argument to load the supervised model
 # prefix will be removed from the label name and stored in the model.labels
 def load_model(filename, label_prefix=''):
+    # Initialize log & sigmoid tables
+    utils.initTables()
 
     # Check if the filename is readable
     if not os.path.isfile(filename):
@@ -238,7 +239,7 @@ def cbow(input_file, output, lr=0.05, dim=100, ws=5, epoch=5, min_count=5,
 # Train classifier
 def supervised(input_file, output, label_prefix='__label__', lr=0.05, dim=100,
         ws=5, epoch=5, min_count=1, neg=5, word_ngrams=1, loss='softmax',
-        bucket=2000000, minn=3, maxn=6, thread=12, lr_update_rate=100,
+        bucket=0, minn=3, maxn=6, thread=12, lr_update_rate=100,
         t=1e-4, silent=1):
     return train_wrapper('supervised', input_file, output, label_prefix, lr,
             dim, ws, epoch, min_count, neg, word_ngrams, loss, bucket, minn,
