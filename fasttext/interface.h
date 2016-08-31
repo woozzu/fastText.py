@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "cpp/src/real.h"
 #include "cpp/src/args.h"
