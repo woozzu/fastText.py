@@ -24,8 +24,24 @@ cdef class FastTextModelWrapper:
     def __cinit__(self):
         self.fm = FastTextModel()
 
-    def get_words(self):
-        return self.words
+    # dict_* methods is a wrapper for the Dictionary class methods;
+    # We can't access dicrectly Dictionary in python because
+    # Dictionary class doesn't have a nullary constructor
+    def dict_nwords(self):
+        return self.fm.dictGetNWords()
+
+    def dict_get_word(self, i):
+        cdef string cpp_string
+        cpp_string = self.fm.dictGetWord(i)
+        return cpp_string.decode('utf-8')
+
+    def dict_nlabels(self):
+        return self.fm.dictGetNLabels()
+
+    def dict_get_label(self, i):
+        cdef string cpp_string
+        cpp_string = self.fm.dictGetLabel(i)
+        return cpp_string.decode('utf-8')
 
     def get_vector(self, word):
         word_bytes = bytes(word, 'utf-8')
@@ -117,25 +133,24 @@ def load_model(filename, label_prefix=''):
     model = FastTextModelWrapper()
     filename_bytes = bytes(filename, 'utf-8')
     try:
+        # How we load the dictionary
         loadModelWrapper(filename_bytes, model.fm)
     except:
         raise Exception('fastText: Cannot load ' + filename +
                 ' due to C++ extension failed to allocate the memory')
 
     model_name = model.fm.modelName
-    dictionary = model.fm.getDictionary()
-    cdef string cpp_string
     if model_name == 'skipgram' or model_name == 'cbow':
         words = []
-        for i in xrange(dictionary.nwords()):
-            cpp_string = dictionary.getWord(i)
-            words.append(cpp_string.decode('utf-8'))
+        # We build the dictionary here to support unicode characters
+        for i in xrange(model.get_nwords()):
+            word = model.get_word(i)
+            words.append(word)
         return WordVectorModel(model, words)
     elif model_name == 'supervised':
         labels = []
-        for i in xrange(dictionary.nlabels()):
-            cpp_string = dictionary.getLabel(i)
-            label = cpp_string.decode('utf-8')
+        for i in xrange(model.get_nlabels()):
+            label = model.get_label(i)
             # Remove the prefix
             labels.append(label.replace(label_prefix, ''))
         return SupervisedModel(model, labels, label_prefix)
