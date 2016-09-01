@@ -89,7 +89,7 @@ def read_labels_from_result_prob(filename, label_prefix):
                     labels.append(label)
                 else:
                     probabilities.append(float(w))
-            all_labels.append(zip(labels, probabilities))
+            all_labels.append(list(zip(labels, probabilities)))
     return all_labels
 
 # To read text data to predict

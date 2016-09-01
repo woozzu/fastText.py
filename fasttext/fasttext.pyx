@@ -80,7 +80,7 @@ cdef class FastTextModelWrapper:
             prob = float(cpp_str)
             labels.append(label)
             probabilities.append(prob)
-        return zip(labels, probabilities)
+        return list(zip(labels, probabilities))
 
     @property
     def dim(self):
