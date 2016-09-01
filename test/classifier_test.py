@@ -19,6 +19,8 @@ output = path.join(test_dir, 'generated_classifier')
 test_result = path.join(test_dir, 'classifier_test_result.txt')
 pred_result = path.join(test_dir, 'classifier_pred_result.txt')
 pred_k_result = path.join(test_dir, 'classifier_pred_k_result.txt')
+pred_prob_result = path.join(test_dir, 'classifier_pred_prob_result.txt')
+pred_prob_k_result = path.join(test_dir, 'classifier_pred_prob_k_result.txt')
 test_file = path.join(test_dir, 'classifier_test.txt')
 params_txt = path.join(test_dir, 'classifier_default_params_result.txt')
 
@@ -63,6 +65,31 @@ def read_labels_from_result(filename, label_prefix):
                 label = raw_label.replace(label_prefix, '')
                 labels.append(label.strip())
             all_labels.append(labels)
+    return all_labels
+
+def read_labels_from_result_prob(filename, label_prefix):
+    all_labels = []
+    with open(filename, 'r') as f:
+        for line in f:
+            try:
+                line = line.decode('utf-8')
+            except:
+                line = line
+
+            labels = []
+            probabilities = []
+            raw = line.split(' ')
+            prefix_len = len(label_prefix)
+            for w in raw:
+                w = w.strip()
+                if len(w) < prefix_len:
+                    probabilities.append(float(w))
+                elif w[:prefix_len] == label_prefix:
+                    label = w.replace(label_prefix, '')
+                    labels.append(label)
+                else:
+                    probabilities.append(float(w))
+            all_labels.append(list(zip(labels, probabilities)))
     return all_labels
 
 # To read text data to predict
@@ -220,5 +247,44 @@ class TestClassifierModel(unittest.TestCase):
         # fasttext(1)
         self.assertTrue(labels == fasttext_labels)
 
+    def test_classifier_predict_prob(self):
+        # Load the pre-trained classifier
+        label_prefix = '__label__'
+        classifier = ft.load_model(classifier_bin, label_prefix=label_prefix)
+
+        # Read prediction result from fasttext(1)
+        fasttext_labels = read_labels_from_result_prob(pred_prob_result,
+                label_prefix=label_prefix)
+
+        # Read texts from the pred_file
+        texts = read_texts(pred_file)
+
+        # Predict the labels
+        labels = classifier.predict_proba(texts)
+
+        # Make sure the returned labels are the same as predicted by
+        # fasttext(1)
+        self.assertTrue(labels == fasttext_labels)
+
+    def test_classifier_predict_prob_k_best(self):
+        label_prefix = '__label__'
+        # Load the pre-trained classifier
+        classifier = ft.load_model(classifier_bin, label_prefix=label_prefix)
+
+        # Read prediction result from fasttext(1)
+        fasttext_labels = read_labels_from_result_prob(pred_prob_k_result,
+                label_prefix=label_prefix)
+
+        # Read texts from the pred_file
+        texts = read_texts(pred_file)
+
+        # Predict the k-best labels
+        labels = classifier.predict_proba(texts, k=5)
+
+        # Make sure the returned labels are the same as predicted by
+        # fasttext(1)
+        self.assertTrue(labels == fasttext_labels)
+
 if __name__ == '__main__':
     unittest.main()
+

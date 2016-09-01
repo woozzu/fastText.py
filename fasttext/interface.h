@@ -3,18 +3,21 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "cpp/src/real.h"
 #include "cpp/src/args.h"
 #include "cpp/src/dictionary.h"
 #include "cpp/src/matrix.h"
+#include "cpp/src/model.h"
 
 class FastTextModel {
     private:
         std::vector<std::string> _words;
-        Dictionary _dict;
-        Matrix _input_matrix;
-        Matrix _output_matrix;
+        std::shared_ptr<Dictionary> _dict;
+        std::shared_ptr<Matrix> _input_matrix;
+        std::shared_ptr<Matrix> _output_matrix;
+        std::shared_ptr<Model> _model;
 
     public:
         FastTextModel();
@@ -37,13 +40,21 @@ class FastTextModel {
         std::vector<real> getVectorWrapper(std::string word);
         std::vector<double> classifierTest(std::string filename, int32_t k);
         std::vector<std::string> classifierPredict(std::string text, int32_t k);
+        std::vector<std::vector<std::string>> classifierPredictProb(std::string text,
+                int32_t k);
 
         void addWord(std::string word);
-        void setDict(Dictionary dict);
-        void setMatrix(Matrix& input, Matrix& output);
-        void setArg(Args arg);
+        void setArgs(std::shared_ptr<Args> args);
+        void setDictionary(std::shared_ptr<Dictionary> dict);
+        void setMatrix(std::shared_ptr<Matrix> input,
+                std::shared_ptr<Matrix> output);
+        void setModel(std::shared_ptr<Model> model);
 
-        Dictionary getDictionary();
+        /* wrapper for Dictionary class */
+        int32_t dictGetNWords();
+        std::string dictGetWord(int32_t i);
+        int32_t dictGetNLabels();
+        std::string dictGetLabel(int32_t i);
 };
 
 void trainWrapper(int argc, char **argv, int silent);

@@ -2,13 +2,18 @@
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libc.stdint cimport int32_t
+from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/src/real.h":
     ctypedef float real
 
+cdef extern from "cpp/src/args.h":
+    cdef cppclass Args:
+        Args()
+
 cdef extern from "cpp/src/dictionary.h":
     cdef cppclass Dictionary:
-        Dictionary()
+        Dictionary(shared_ptr[Args])
 
         int32_t nwords()
         int32_t nlabels()
@@ -37,8 +42,13 @@ cdef extern from "interface.h":
         vector[real] getVectorWrapper(string word)
         vector[double] classifierTest(string filename, int32_t k)
         vector[string] classifierPredict(string text, int32_t k)
+        vector[vector[string]] classifierPredictProb(string text, int32_t k)
 
-        Dictionary getDictionary()
+        # Wrapper for Dictionary class
+        int32_t dictGetNWords()
+        string dictGetWord(int32_t i)
+        int32_t dictGetNLabels()
+        string dictGetLabel(int32_t i)
 
     void trainWrapper(int argc, char **argvm, int silent)
 
