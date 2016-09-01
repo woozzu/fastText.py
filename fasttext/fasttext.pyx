@@ -237,9 +237,9 @@ def cbow(input_file, output, lr=0.05, dim=100, ws=5, epoch=5, min_count=5,
             thread, lr_update_rate, t, silent)
 
 # Train classifier
-def supervised(input_file, output, label_prefix='__label__', lr=0.05, dim=100,
+def supervised(input_file, output, label_prefix='__label__', lr=0.1, dim=100,
         ws=5, epoch=5, min_count=1, neg=5, word_ngrams=1, loss='softmax',
-        bucket=0, minn=3, maxn=6, thread=12, lr_update_rate=100,
+        bucket=0, minn=0, maxn=0, thread=12, lr_update_rate=100,
         t=1e-4, silent=1):
     return train_wrapper('supervised', input_file, output, label_prefix, lr,
             dim, ws, epoch, min_count, neg, word_ngrams, loss, bucket, minn,
