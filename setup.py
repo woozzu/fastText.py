@@ -4,13 +4,7 @@ from Cython.Build import cythonize
 from sys import platform
 import unittest
 
-# Read the fastText.py version
-def read_version():
-    with open('fasttext/VERSION') as f:
-        return f.read().strip()
-
 # Define the C++ extension
-
 if platform == "darwin":
     extra_compile_args = ['-O3', '-pthread', '-funroll-loops', '-std=c++0x', '-stdlib=libc++', '-mmacosx-version-min=10.7']
 else:
@@ -36,7 +30,7 @@ extensions = [
 # Package details
 setup(
     name='fasttext',
-    version=read_version(),
+    version='0.7.5',
     author='Bayu Aldi Yansyah',
     author_email='bayualdiyansyah@gmail.com',
     url='https://github.com/pyk/fastText.py',
@@ -44,7 +38,6 @@ setup(
     long_description=open('README.rst', 'r').read(),
     license='BSD 3-Clause License',
     packages=['fasttext'],
-    data_files=[('fasttext', ['fasttext/VERSION'])],
     ext_modules = cythonize(extensions),
     install_requires=[
         'numpy>=1',
