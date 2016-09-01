@@ -54,13 +54,14 @@ cdef class FastTextModelWrapper:
         nexamples = int(result[2])
         return CTRes(precision, recall, nexamples)
 
-    def classifier_predict(self, text, k):
+    def classifier_predict(self, text, k, label_prefix):
         cdef vector[string] raw_labels
         text_bytes = bytes(text, 'utf-8')
         labels = []
         raw_labels = self.fm.classifierPredict(text_bytes, k)
         for raw_label in raw_labels:
             label = raw_label.decode('utf-8')
+            label = label.replace(label_prefix, '')
             labels.append(label)
         return labels
 

@@ -60,11 +60,8 @@ class SupervisedModel(object):
     def predict(self, texts, k=1):
         all_labels = []
         for text in texts:
-            labels = []
-            raw_labels = self._model.classifier_predict(text, k=k)
-            for raw_label in raw_labels:
-                label = raw_label.replace(self.label_prefix, '')
-                labels.append(label)
+            labels = self._model.classifier_predict(text, k,
+                    self.label_prefix)
             all_labels.append(labels)
         return all_labels
 
