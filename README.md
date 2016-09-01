@@ -152,12 +152,20 @@ use `classifer.predict` method:
 texts = ['example very long text 1', 'example very longtext 2']
 labels = classifier.predict(texts)
 print labels
+
+# Or with the probability
+labels = classifier.predict_proba(texts)
+print labels
 ```
 
 We can specify `k` value to get the k-best labels from classifier:
 
 ```python
 labels = classifier.predict(texts, k=3)
+print labels
+
+# Or with the probability
+labels = classifier.predict_proba(texts, k=3)
 print labels
 ```
 
@@ -349,6 +357,8 @@ This interface is equivalent as `fasttext(1)` predict command.
 ```python
 labels = classifier.predict(texts, k)
 
+# Or with probability
+labels = classifier.predict_proba(texts, k)
 ```
 
 The param `k` is optional, and equal to `1` by default.
@@ -358,26 +368,28 @@ The param `k` is optional, and equal to `1` by default.
 Classifier have the following atributes & methods
 
 ```python
-classifier.labels            # List of labels
-classifier.label_prefix      # Prefix of the label
-classifier.dim               # Size of word vector
-classifier.ws                # Size of context window
-classifier.epoch             # Number of epochs
-classifier.min_count         # Minimal number of word occurences
-classifier.neg               # Number of negative sampled
-classifier.word_ngrams       # Max length of word ngram
-classifier.loss_name         # Loss function name
-classifier.bucket            # Number of buckets
-classifier.minn              # Min length of char ngram
-classifier.maxn              # Max length of char ngram
-classifier.lr_update_rate    # Rate of updates for the learning rate
-classifier.t                 # Value of sampling threshold
-classifier.test(filename, k) # Test the classifier
-classifier.predict(texts, k) # Predict the most likely label
+classifier.labels                  # List of labels
+classifier.label_prefix            # Prefix of the label
+classifier.dim                     # Size of word vector
+classifier.ws                      # Size of context window
+classifier.epoch                   # Number of epochs
+classifier.min_count               # Minimal number of word occurences
+classifier.neg                     # Number of negative sampled
+classifier.word_ngrams             # Max length of word ngram
+classifier.loss_name               # Loss function name
+classifier.bucket                  # Number of buckets
+classifier.minn                    # Min length of char ngram
+classifier.maxn                    # Max length of char ngram
+classifier.lr_update_rate          # Rate of updates for the learning rate
+classifier.t                       # Value of sampling threshold
+classifier.test(filename, k)       # Test the classifier
+classifier.predict(texts, k)       # Predict the most likely label
+classifier.predict_proba(texts, k) # Predict the most likely label include their probability
 
 ```
 
-The param `k` for `classifier.test` and `classifier.predict` is optional,
+The param `k` for `classifier.test`, `classifier.predict` and
+`classifier.predict_proba` is optional,
 and equal to `1` by default.
 
 ## References
