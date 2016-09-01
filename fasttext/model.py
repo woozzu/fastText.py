@@ -68,6 +68,14 @@ class SupervisedModel(object):
             all_labels.append(labels)
         return all_labels
 
+    def predict_proba(self, texts, k=1):
+        results = []
+        for text in texts:
+            result = self._model.classifier_predict_prob(text, k,
+                    self.label_prefix)
+            results.append(result)
+        return results
+
 # Class for test result
 class ClassifierTestResult(object):
     def __init__(self, precision, recall, nexamples):

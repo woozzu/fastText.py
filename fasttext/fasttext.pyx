@@ -64,6 +64,23 @@ cdef class FastTextModelWrapper:
             labels.append(label)
         return labels
 
+    def classifier_predict_prob(self, text, k, label_prefix):
+        cdef vector[vector[string]] raw_results
+        cdef string cpp_str
+        text_bytes = bytes(text, 'utf-8')
+        labels = []
+        probabilities = []
+        raw_results = self.fm.classifierPredictProb(text_bytes, k)
+        for result in raw_results:
+            cpp_str = result[0]
+            label = cpp_str.decode('utf-8')
+            label = label.replace(label_prefix, '')
+            cpp_str = result[1]
+            prob = float(cpp_str)
+            labels.append(label)
+            probabilities.append(prob)
+        return zip(labels, probabilities)
+
     @property
     def dim(self):
         return self.fm.dim

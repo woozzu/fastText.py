@@ -40,6 +40,8 @@ class FastTextModel {
         std::vector<real> getVectorWrapper(std::string word);
         std::vector<double> classifierTest(std::string filename, int32_t k);
         std::vector<std::string> classifierPredict(std::string text, int32_t k);
+        std::vector<std::vector<std::string>> classifierPredictProb(std::string text,
+                int32_t k);
 
         void addWord(std::string word);
         void setArgs(std::shared_ptr<Args> args);
