@@ -6,7 +6,7 @@ from numpy.linalg import norm
 class WordVectorModel(object):
     def __init__(self, model, words):
         self._model = model
-        self.words = words
+        self.words = set(words)
         self.dim = model.dim
         self.ws = model.ws
         self.epoch = model.epoch
