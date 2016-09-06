@@ -187,6 +187,12 @@ class TestClassifierModel(unittest.TestCase):
         # Make sure .bin and .vec are generated
         self.assertTrue(path.isfile(output + '.bin'))
 
+        # Test some methods, make sure it works
+        labels = model.predict(['some long long texts'])
+        self.assertTrue(type(labels) == type([]))
+        labels = model.predict_proba(['some long long texts'])
+        self.assertTrue(type(labels) == type([]))
+
     def test_classifier_test(self):
         # Read the test result from fasttext(1) using the same classifier model
         precision_at_one = 0.0
