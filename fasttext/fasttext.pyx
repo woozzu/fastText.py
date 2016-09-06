@@ -194,6 +194,7 @@ def train_wrapper(model_name, input_file, output, label_prefix, lr, dim, ws,
         raise IOError('fastText: output is not writeable!')
 
     # Initialize log & sigmoid tables
+    # The table is not freed since it used by utils::log globally
     utils.initTables()
 
     # Setup argv, arguments and their values
@@ -226,9 +227,6 @@ def train_wrapper(model_name, input_file, output, label_prefix, lr, dim, ws,
     # Load the model
     output_bin = output + '.bin'
     model = load_model(output_bin, label_prefix)
-
-    # Free the log & sigmoid tables from the heap
-    utils.freeTables()
 
     # Free the allocated memory
     # The content from PyString_AsString is not deallocated
