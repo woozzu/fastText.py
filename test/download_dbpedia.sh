@@ -17,7 +17,7 @@ normalize_text() {
 }
 
 echo "Downloading the dbpedia_csv.tar.gz ..."
-wget -c "https://googledrive.com/host/0Bz8a_Dbh9QhbQ2Vic1kxMmZZQ1k" \
+wget -c "https://github.com/pyk/dbpedia_csv/raw/master/dbpedia_csv.tar.gz" \
     -O test/dbpedia_csv.tar.gz
 
 echo "Extract dbpedia_csv.tar.gz to test/"
