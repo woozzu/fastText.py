@@ -185,7 +185,7 @@ model = fasttext.skipgram(params)
 List of available `params` and their default value:
 
 ```
-input          training file path (required)
+input_file     training file path (required)
 output         output file path (required)
 lr             learning rate [0.05]
 lr_update_rate change the rate of updates for the learning rate [100]
@@ -222,7 +222,7 @@ model = fasttext.cbow(params)
 List of available `params` and their default value:
 
 ```
-input          training file path (required)
+input_file     training file path (required)
 output         output file path (required)
 lr             learning rate [0.05]
 lr_update_rate change the rate of updates for the learning rate [100]
@@ -290,7 +290,7 @@ classifier = fasttext.supervised(params)
 List of available `params` and their default value:
 
 ```
-input          training file path (required)
+input_file     training file path (required)
 output         output file path (required)
 label_prefix   label prefix ['__label__']
 lr             learning rate [0.1]
