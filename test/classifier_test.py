@@ -108,7 +108,8 @@ def read_texts(pred_file):
 class TestClassifierModel(unittest.TestCase):
     def test_load_classifier_model(self):
         label_prefix='__label__'
-        model = ft.load_model(classifier_bin, label_prefix=label_prefix)
+        model = ft.load_model(classifier_bin, label_prefix=label_prefix,
+                encoding='utf-8')
 
         # Make sure the model is returned correctly
         self.assertEqual(model.model_name, 'supervised')
