@@ -198,7 +198,7 @@ List of available ``params`` and their default value:
 
 ::
 
-    input          training file path (required)
+    input_file     training file path (required)
     output         output file path (required)
     lr             learning rate [0.05]
     lr_update_rate change the rate of updates for the learning rate [100]
@@ -215,6 +215,7 @@ List of available ``params`` and their default value:
     thread         number of threads [12]
     t              sampling threshold [0.0001]
     silent         disable the log output from the C++ extension [1]
+    encoding       specify input_file encoding [utf-8]
 
 Example usage:
 
@@ -235,7 +236,7 @@ List of available ``params`` and their default value:
 
 ::
 
-    input          training file path (required)
+    input_file     training file path (required)
     output         output file path (required)
     lr             learning rate [0.05]
     lr_update_rate change the rate of updates for the learning rate [100]
@@ -252,6 +253,7 @@ List of available ``params`` and their default value:
     thread         number of threads [12]
     t              sampling threshold [0.0001]
     silent         disable the log output from the C++ extension [1]
+    encoding       specify input_file encoding [utf-8]
 
 Example usage:
 
@@ -267,7 +269,7 @@ loaded using this function
 
 .. code:: python
 
-    model = fasttext.load_model('model.bin')
+    model = fasttext.load_model('model.bin', encoding='utf-8')
 
 Attributes and methods for the model
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -290,6 +292,7 @@ Skipgram and CBOW model have the following atributes & methods
     model.maxn             # Max length of char ngram
     model.lr_update_rate   # Rate of updates for the learning rate
     model.t                # Value of sampling threshold
+    model.encoding         # Encoding of the model
     model[word]            # Get the vector of specified word
 
 Supervised model
@@ -305,7 +308,7 @@ List of available ``params`` and their default value:
 
 ::
 
-    input          training file path (required)
+    input_file     training file path (required)
     output         output file path (required)
     label_prefix   label prefix ['__label__']
     lr             learning rate [0.1]
@@ -323,6 +326,7 @@ List of available ``params`` and their default value:
     thread         number of threads [12]
     t              sampling threshold [0.0001]
     silent         disable the log output from the C++ extension [1]
+    encoding       specify input_file encoding [utf-8]
 
 Example usage:
 
@@ -400,6 +404,7 @@ Classifier have the following atributes & methods
     classifier.maxn                    # Max length of char ngram
     classifier.lr_update_rate          # Rate of updates for the learning rate
     classifier.t                       # Value of sampling threshold
+    classifier.encoding                # Encoding that used by classifier
     classifier.test(filename, k)       # Test the classifier
     classifier.predict(texts, k)       # Predict the most likely label
     classifier.predict_proba(texts, k) # Predict the most likely label include their probability
