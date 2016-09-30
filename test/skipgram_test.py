@@ -20,7 +20,7 @@ params_txt = path.join(test_dir, 'skipgram_default_params_result.txt')
 # Test to make sure that skipgram interface run correctly
 class TestSkipgramModel(unittest.TestCase):
     def test_load_skipgram_model(self):
-        model = ft.load_model(skipgram_file)
+        model = ft.load_model(skipgram_file, encoding='utf-8')
 
         # Make sure the model is returned correctly
         self.assertEqual(model.model_name, 'skipgram')
