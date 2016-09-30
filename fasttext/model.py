@@ -4,7 +4,7 @@ from numpy.linalg import norm
 
 # Class for Skipgram and CBOW model
 class WordVectorModel(object):
-    def __init__(self, model, words):
+    def __init__(self, model, words, encoding='utf-8'):
         self._model = model
         self.words = set(words)
         self.dim = model.dim
@@ -13,17 +13,17 @@ class WordVectorModel(object):
         self.min_count = model.minCount
         self.neg = model.neg
         self.word_ngrams = model.wordNgrams
-        self.loss_name = model.lossName.decode(model.encoding)
-        self.model_name = model.modelName.decode(model.encoding)
+        self.loss_name = model.lossName.decode(encoding)
+        self.model_name = model.modelName.decode(encoding)
         self.bucket = model.bucket
         self.minn = model.minn
         self.maxn = model.maxn
         self.lr_update_rate = model.lrUpdateRate
         self.t = model.t
-        self.encoding = model.encoding
+        self.encoding = encoding
 
     def __getitem__(self, word):
-        return self._model.get_vector(word)
+        return self._model.get_vector(word, self.encoding)
 
     def __contains__(self, word):
         return word in self.words
@@ -37,7 +37,7 @@ class WordVectorModel(object):
 
 # Class for classifier model
 class SupervisedModel(object):
-    def __init__(self, model, labels, label_prefix):
+    def __init__(self, model, labels, label_prefix, encoding='utf-8'):
         self._model = model
         self.labels = labels
         self.dim = model.dim
@@ -46,24 +46,24 @@ class SupervisedModel(object):
         self.min_count = model.minCount
         self.neg = model.neg
         self.word_ngrams = model.wordNgrams
-        self.loss_name = model.lossName.decode(model.encoding)
-        self.model_name = model.modelName.decode(model.encoding)
+        self.loss_name = model.lossName.decode(encoding)
+        self.model_name = model.modelName.decode(encoding)
         self.bucket = model.bucket
         self.minn = model.minn
         self.maxn = model.maxn
         self.lr_update_rate = model.lrUpdateRate
         self.t = model.t
         self.label_prefix = label_prefix
-        self.encoding = model.encoding
+        self.encoding = encoding
 
     def test(self, test_file, k=1):
-        return self._model.classifier_test(test_file, k)
+        return self._model.classifier_test(test_file, k, self.encoding)
 
     def predict(self, texts, k=1):
         all_labels = []
         for text in texts:
             labels = self._model.classifier_predict(text, k,
-                    self.label_prefix)
+                    self.label_prefix, self.encoding)
             all_labels.append(labels)
         return all_labels
 
@@ -71,7 +71,7 @@ class SupervisedModel(object):
         results = []
         for text in texts:
             result = self._model.classifier_predict_prob(text, k,
-                    self.label_prefix)
+                    self.label_prefix, self.encoding)
             results.append(result)
         return results
 
