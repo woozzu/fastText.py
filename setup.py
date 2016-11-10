@@ -31,7 +31,7 @@ extensions = [
 # Package details
 setup(
     name='fasttext',
-    version='0.8.0',
+    version='0.8.1',
     author='Bayu Aldi Yansyah',
     author_email='bayualdiyansyah@gmail.com',
     url='https://github.com/pyk/fastText.py',
