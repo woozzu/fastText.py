@@ -3,6 +3,8 @@
 
 #include "../fasttext/cpp/src/args.h"
 
+using namespace fasttext;
+
 int main(int argc, char **argv)
 {
     Args args;

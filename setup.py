@@ -21,7 +21,8 @@ extensions = [
             'fasttext/cpp/src/model.cc',
             'fasttext/cpp/src/utils.cc',
             'fasttext/cpp/src/fasttext.cc',
-            'fasttext/cpp/src/vector.cc'
+            'fasttext/cpp/src/vector.cc',
+            'fasttext/cpp/src/main.cc'
         ],
         language='c++',
         extra_compile_args=extra_compile_args)

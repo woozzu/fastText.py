@@ -1,5 +1,5 @@
 #ifndef FASTTEXT_INTERFACE_H
-#define FASTTEXT_INTERAFCE_H
+#define FASTTEXT_INTERFACE_H
 
 #include <string>
 #include <vector>
@@ -10,6 +10,8 @@
 #include "cpp/src/dictionary.h"
 #include "cpp/src/matrix.h"
 #include "cpp/src/model.h"
+
+using namespace fasttext;
 
 class FastTextModel {
     private:

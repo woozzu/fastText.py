@@ -4,7 +4,7 @@ from libcpp.vector cimport vector
 from libc.stdint cimport int32_t
 from libcpp.memory cimport shared_ptr
 
-cdef extern from "cpp/src/real.h":
+cdef extern from "cpp/src/real.h" namespace "fasttext":
     ctypedef float real
 
 cdef extern from "cpp/src/args.h":

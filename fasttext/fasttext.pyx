@@ -1,5 +1,4 @@
 # fastText C++ interface
-cimport utils
 from interface cimport trainWrapper
 from interface cimport loadModelWrapper
 from interface cimport FastTextModel
@@ -142,9 +141,6 @@ cdef class FastTextModelWrapper:
 # label_prefix is an optional argument to load the supervised model
 # prefix will be removed from the label name and stored in the model.labels
 def load_model(filename, label_prefix='', encoding='utf-8'):
-    # Initialize log & sigmoid tables
-    utils.initTables()
-
     # Check if the filename is readable
     if not os.path.isfile(filename):
         raise ValueError('fastText: trained model cannot be opened!')
@@ -179,7 +175,7 @@ def load_model(filename, label_prefix='', encoding='utf-8'):
 # Wrapper for train(int argc, char *argv) C++ function in cpp/src/fasttext.cc
 def train_wrapper(model_name, input_file, output, label_prefix, lr, dim, ws,
         epoch, min_count, neg, word_ngrams, loss, bucket, minn, maxn, thread,
-        lr_update_rate, t, silent=1, encoding='utf-8'):
+        lr_update_rate, t, pretrained_vectors, silent=1, encoding='utf-8'):
 
     # Check if the input_file is valid
     if not os.path.isfile(input_file):
@@ -193,10 +189,6 @@ def train_wrapper(model_name, input_file, output, label_prefix, lr, dim, ws,
     except IOError:
         raise IOError('fastText: output is not writeable!')
 
-    # Initialize log & sigmoid tables
-    # The table is not freed since it used by utils::log globally
-    utils.initTables()
-
     # Setup argv, arguments and their values
     py_argv = [b'fasttext', bytes(model_name, 'utf-8')]
     py_args = [b'-input', b'-output', b'-lr', b'-dim', b'-ws', b'-epoch',
@@ -205,10 +197,12 @@ def train_wrapper(model_name, input_file, output, label_prefix, lr, dim, ws,
     values = [input_file, output, lr, dim, ws, epoch, min_count, neg,
             word_ngrams, loss, bucket, minn, maxn, thread, lr_update_rate, t]
 
-    # Add -label params for supervised model
+    # Add -label and -pretrainedVectors params for supervised model
     if model_name == 'supervised':
         py_args.append(b'-label')
         values.append(label_prefix)
+        py_args.append(b'-pretrainedVectors')
+        values.append(pretrained_vectors)
 
     for arg, value in zip(py_args, values):
         py_argv.append(arg)
@@ -239,24 +233,26 @@ def skipgram(input_file, output, lr=0.05, dim=100, ws=5, epoch=5, min_count=5,
         neg=5, word_ngrams=1, loss='ns', bucket=2000000, minn=3, maxn=6,
         thread=12, lr_update_rate=100, t=1e-4, silent=1, encoding='utf-8'):
     label_prefix = ''
+    pretrained_vectors = ''
     return train_wrapper('skipgram', input_file, output, label_prefix, lr,
             dim, ws, epoch, min_count, neg, word_ngrams, loss, bucket, minn,
-            maxn, thread, lr_update_rate, t, silent, encoding='utf-8')
+            maxn, thread, lr_update_rate, t, pretrained_vectors, silent, encoding='utf-8')
 
 # Learn word representation using CBOW model
 def cbow(input_file, output, lr=0.05, dim=100, ws=5, epoch=5, min_count=5,
         neg=5, word_ngrams=1, loss='ns', bucket=2000000, minn=3, maxn=6,
         thread=12, lr_update_rate=100, t=1e-4, silent=1, encoding='utf-8'):
     label_prefix = ''
+    pretrained_vectors = ''
     return train_wrapper('cbow', input_file, output, label_prefix, lr, dim,
             ws, epoch, min_count, neg, word_ngrams, loss, bucket, minn, maxn,
-            thread, lr_update_rate, t, silent, encoding)
+            thread, lr_update_rate, t, pretrained_vectors, silent, encoding)
 
 # Train classifier
 def supervised(input_file, output, label_prefix='__label__', lr=0.1, dim=100,
         ws=5, epoch=5, min_count=1, neg=5, word_ngrams=1, loss='softmax',
         bucket=0, minn=0, maxn=0, thread=12, lr_update_rate=100,
-        t=1e-4, silent=1, encoding='utf-8'):
+        t=1e-4, pretrained_vectors='', silent=1, encoding='utf-8'):
     return train_wrapper('supervised', input_file, output, label_prefix, lr,
             dim, ws, epoch, min_count, neg, word_ngrams, loss, bucket, minn,
-            maxn, thread, lr_update_rate, t, silent, encoding)
+            maxn, thread, lr_update_rate, t, pretrained_vectors, silent, encoding)

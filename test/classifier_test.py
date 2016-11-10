@@ -23,6 +23,7 @@ pred_prob_result = path.join(test_dir, 'classifier_pred_prob_result.txt')
 pred_prob_k_result = path.join(test_dir, 'classifier_pred_prob_k_result.txt')
 test_file = path.join(test_dir, 'classifier_test.txt')
 params_txt = path.join(test_dir, 'classifier_default_params_result.txt')
+pretrained_vectors_path = path.join(test_dir, 'generated_skipgram.vec')
 
 # To validate model are loaded correctly
 def read_labels_from_input(filename, label_prefix):
@@ -171,6 +172,49 @@ class TestClassifierModel(unittest.TestCase):
         model = ft.supervised(input_file, output, dim=dim, lr=lr, epoch=epoch,
                 min_count=min_count, word_ngrams=word_ngrams, bucket=bucket,
                 thread=thread, silent=silent, label_prefix=label_prefix)
+
+        # Make sure the model is generated correctly
+        self.assertEqual(model.dim, dim)
+        self.assertEqual(model.epoch, epoch)
+        self.assertEqual(model.min_count, min_count)
+        self.assertEqual(model.word_ngrams, word_ngrams)
+        self.assertEqual(model.bucket, bucket)
+
+        # Read labels from the the input_file
+        labels = read_labels_from_input(input_file, label_prefix)
+
+        # Make sure labels are loaded correctly
+        self.assertTrue(sorted(model.labels) == sorted(labels))
+
+        # Make sure .bin and .vec are generated
+        self.assertTrue(path.isfile(output + '.bin'))
+
+        # Test some methods, make sure it works
+        labels = model.predict(['some long long texts'])
+        self.assertTrue(type(labels) == type([]))
+        labels = model.predict_proba(['some long long texts'])
+        self.assertTrue(type(labels) == type([]))
+
+    def test_train_classifier_pretrained_vectors(self):
+        # set params
+        dim=100
+        lr=0.005
+        epoch=1
+        min_count=1
+        word_ngrams=3
+        bucket=2000000
+        thread=4
+        silent=1
+        label_prefix='__label__'
+
+        # Make sure the pretrained vectors exists
+        self.assertTrue(path.isfile(pretrained_vectors_path), "The model used as pretrained vectors does not exist."
+                                                              "Please ensure that skipgram tests ran before this one.")
+
+        # Train the classifier
+        model = ft.supervised(input_file, output, dim=dim, lr=lr, epoch=epoch,
+                min_count=min_count, word_ngrams=word_ngrams, bucket=bucket,
+                thread=thread, silent=silent, label_prefix=label_prefix, pretrained_vectors=pretrained_vectors_path)
 
         # Make sure the model is generated correctly
         self.assertEqual(model.dim, dim)
