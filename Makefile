@@ -38,6 +38,7 @@ pre-test:
 .PHONY: pre-test
 
 fasttext/cpp/fasttext:
+	rm -f fasttext/cpp/fasttext
 	make --directory fasttext/cpp/
 
 # Test for skipgram model

@@ -1,4 +1,4 @@
-NEW_VERSION=fa8fbe1
+NEW_VERSION=f8bea68
 CURRENT_VERSION=$(cat fasttext/cpp/LAST_COMMIT)
 
 if [ "$NEW_VERSION" = "$CURRENT_VERSION" ]; then
