@@ -13,7 +13,7 @@ result/
 dist/
 
 fasttext/fasttext.cpp
-facebookresearch-fasttext-*
+facebookresearch-fastText-*
 
 # Intellij
 .idea/
