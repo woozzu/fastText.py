@@ -285,7 +285,7 @@ void trainWrapper(int argc, char **argv, int silent)
  * data is private in FastText class */
 void loadModelWrapper(std::string filename, FastTextModel& model)
 {
-    std::ifstream ifs(filename);
+    std::ifstream ifs(filename, std::ios_base::in | std::ios_base::binary);
     if (!ifs.is_open()) {
         std::cerr << "interface.cc: cannot load model file ";
         std::cerr << filename << std::endl;
