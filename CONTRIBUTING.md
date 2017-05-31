@@ -31,6 +31,13 @@ Here are some guidelines and information about how to do so.
 
 1. Open a pull request.
 
+If you are using `virtualenv`, you can create the environment first before
+installing the package:
+
+    $ mkvirtualenv fasttext
+    $ workon fasttext
+    $ make install-dev
+
 ### Update the C++ source code
 
 1. Update `NEW_VERSION` variable with the latest version of commit in the 
