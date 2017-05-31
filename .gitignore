@@ -1,11 +1,11 @@
 *.egg-info
-data/
 *.pyc
 *.so
 *.tar.gz
 *.DS_Store
 *.bin
 *.vec
+*.sublime*
 
 build/
 data/
@@ -13,7 +13,7 @@ result/
 dist/
 
 fasttext/fasttext.cpp
-facebookresearch-fasttext-*
+facebookresearch-fastText-*
 
 # Intellij
 .idea/
