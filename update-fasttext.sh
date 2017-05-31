@@ -1,4 +1,4 @@
-NEW_VERSION=26e524e
+NEW_VERSION=f24a781
 CURRENT_VERSION=$(cat fasttext/cpp/LAST_COMMIT)
 
 if [ "$NEW_VERSION" = "$CURRENT_VERSION" ]; then
@@ -8,7 +8,7 @@ else
     mv fasttext/cpp facebookresearch-fastText-${CURRENT_VERSION}
 
     if [ -d "facebookresearch-fastText-${NEW_VERSION}" ]; then
-        cp -r facebookresearch-fasttext-${NEW_VERSION} fasttext/cpp
+        cp -r facebookresearch-fastText-${NEW_VERSION} fasttext/cpp
         echo $NEW_VERSION >> fasttext/cpp/LAST_COMMIT
     else
         if [ ! -d "${NEW_VERSION}.tar.gz" ]; then
@@ -16,12 +16,12 @@ else
             wget https://api.github.com/repos/facebookresearch/fasttext/tarball/${NEW_VERSION}\
                 -O ${NEW_VERSION}.tar.gz
             tar xzfv ${NEW_VERSION}.tar.gz
-            cp -r facebookresearch-fasttext-${NEW_VERSION} fasttext/cpp
+            cp -r facebookresearch-fastText-${NEW_VERSION} fasttext/cpp
             echo $NEW_VERSION >> fasttext/cpp/LAST_COMMIT
         else
             echo "fastText: ${NEW_VERSION}.tar.gz exists"
             tar xzfv ${NEW_VERSION}.tar.gz
-            cp -r facebookresearch-fasttext-${NEW_VERSION} fasttext/cpp
+            cp -r facebookresearch-fastText-${NEW_VERSION} fasttext/cpp
             echo $NEW_VERSION >> fasttext/cpp/LAST_COMMIT
         fi
 
