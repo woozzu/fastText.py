@@ -31,6 +31,18 @@ Here are some guidelines and information about how to do so.
 
 1. Open a pull request.
 
+### Update the C++ source code
+
+1. Update `NEW_VERSION` variable with the latest version of commit in the 
+fasttext's [master branch](https://github.com/facebookresearch/fastText/commits/master).
+1. Run `sh update-fasttext.sh`
+
+After this step, the old version will be moved to 
+`facebookresearch-fastText-$COMMIT` and the latest version will be copied to
+`fasttext/cpp`.
+
+Make sure that `fasttext/cpp/LAST_COMMIT` is match with the latest one.
+
 ## Filing Issues
 When filing an issue, make sure to answer these five questions:
 
