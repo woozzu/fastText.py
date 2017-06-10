@@ -12,17 +12,17 @@ import fasttext as ft
 import default_params
 
 test_dir = path.dirname(__file__)
-classifier_bin = path.join(test_dir, 'classifier.bin')
+SUPERVISED_BINFILE = path.join(test_dir, 'supervised.bin')
 input_file = path.join(test_dir, 'dbpedia.train')
-pred_file  = path.join(test_dir, 'classifier_pred_test.txt')
-output = path.join(test_dir, 'generated_classifier')
-test_result = path.join(test_dir, 'classifier_test_result.txt')
-pred_result = path.join(test_dir, 'classifier_pred_result.txt')
-pred_k_result = path.join(test_dir, 'classifier_pred_k_result.txt')
-pred_prob_result = path.join(test_dir, 'classifier_pred_prob_result.txt')
-pred_prob_k_result = path.join(test_dir, 'classifier_pred_prob_k_result.txt')
-test_file = path.join(test_dir, 'classifier_test.txt')
-params_txt = path.join(test_dir, 'classifier_default_params_result.txt')
+pred_file  = path.join(test_dir, 'supervised_pred_test.txt')
+output = path.join(test_dir, 'generated_supervised')
+test_result = path.join(test_dir, 'supervised_test_result.txt')
+pred_result = path.join(test_dir, 'supervised_pred_result.txt')
+pred_k_result = path.join(test_dir, 'supervised_pred_k_result.txt')
+pred_prob_result = path.join(test_dir, 'supervised_pred_prob_result.txt')
+pred_prob_k_result = path.join(test_dir, 'supervised_pred_prob_k_result.txt')
+test_file = path.join(test_dir, 'supervised_test.txt')
+params_txt = path.join(test_dir, 'supervised_default_params_result.txt')
 pretrained_vectors_path = path.join(test_dir, 'generated_skipgram.vec')
 
 # To validate model are loaded correctly
@@ -105,36 +105,46 @@ def read_texts(pred_file):
             texts.append(line)
     return texts
 
-# Test to make sure that classifier interface run correctly
-class TestClassifierModel(unittest.TestCase):
-    def test_load_classifier_model(self):
+# Test to make sure that supervised interface run correctly
+class TestsupervisedModel(unittest.TestCase):
+    def test_load_supervised_model(self):
         label_prefix='__label__'
-        model = ft.load_model(classifier_bin, label_prefix=label_prefix,
+
+        model = ft.load_model(SUPERVISED_BINFILE, label_prefix=label_prefix,
                 encoding='utf-8')
 
-        # Make sure the model is returned correctly
+        # Make sure the model is returned correctly=
         self.assertEqual(model.model_name, 'supervised')
 
-        # Make sure all params loaded correctly
-        # see Makefile on target test-supervised for the params
-        self.assertEqual(model.dim, 100)
-        self.assertEqual(model.word_ngrams, 2)
+        # Make sure all params are loaded correctly
+        # see Makefile on target test/supervised.bin
         self.assertEqual(model.min_count, 1)
-        self.assertEqual(model.epoch, 5)
-        self.assertEqual(model.bucket, 2000000)
+        self.assertEqual(model.min_count_label, 0)
+        self.assertEqual(model.word_ngrams, 1)
+        self.assertEqual(model.bucket, 200)
+        self.assertEqual(model.minn, 0)
+        self.assertEqual(model.maxn, 0)
+        self.assertEqual(model.t, 0.001)
+        self.assertEqual(model.lr, 0.1)
+        self.assertEqual(model.lr_update_rate, 100)
+        self.assertEqual(model.dim, 50)
+        self.assertEqual(model.ws, 2)
+        self.assertEqual(model.epoch, 1)
+        self.assertEqual(model.neg, 1)
+        self.assertEqual(model.loss_name, "hs")
+        self.assertEqual(model.label_prefix, label_prefix)
 
         # Read labels from the the input_file
         labels = read_labels_from_input(input_file, label_prefix)
-
         # Make sure labels are loaded correctly
         self.assertTrue(sorted(model.labels) == sorted(labels))
 
-    def test_load_invalid_classifier_model(self):
+    def test_load_invalid_supervised_model(self):
         # Make sure we are throwing an exception
         self.assertRaises(ValueError, ft.load_model, '/path/to/invalid',
                 label_prefix='__label__')
 
-    def test_train_classifier_model_default(self):
+    def test_train_supervised_model_default(self):
         default_args = default_params.read_file(params_txt)
         model = ft.supervised(input_file, output)
 
@@ -156,7 +166,7 @@ class TestClassifierModel(unittest.TestCase):
         self.assertEqual(model.t, float(default_args['t']))
         self.assertEqual(model.label_prefix, default_args['label'])
 
-    def test_train_classifier(self):
+    def test_train_supervised(self):
         # set params
         dim=10
         lr=0.005
@@ -168,7 +178,7 @@ class TestClassifierModel(unittest.TestCase):
         silent=1
         label_prefix='__label__'
 
-        # Train the classifier
+        # Train the supervised
         model = ft.supervised(input_file, output, dim=dim, lr=lr, epoch=epoch,
                 min_count=min_count, word_ngrams=word_ngrams, bucket=bucket,
                 thread=thread, silent=silent, label_prefix=label_prefix)
@@ -195,7 +205,7 @@ class TestClassifierModel(unittest.TestCase):
         labels = model.predict_proba(['some long long texts'])
         self.assertTrue(type(labels) == type([]))
 
-    def test_train_classifier_pretrained_vectors(self):
+    def test_train_supervised_pretrained_vectors(self):
         # set params
         dim=100
         lr=0.005
@@ -211,7 +221,7 @@ class TestClassifierModel(unittest.TestCase):
         self.assertTrue(path.isfile(pretrained_vectors_path), "The model used as pretrained vectors does not exist."
                                                               "Please ensure that skipgram tests ran before this one.")
 
-        # Train the classifier
+        # Train the supervised
         model = ft.supervised(input_file, output, dim=dim, lr=lr, epoch=epoch,
                 min_count=min_count, word_ngrams=word_ngrams, bucket=bucket,
                 thread=thread, silent=silent, label_prefix=label_prefix, pretrained_vectors=pretrained_vectors_path)
@@ -238,8 +248,8 @@ class TestClassifierModel(unittest.TestCase):
         labels = model.predict_proba(['some long long texts'])
         self.assertTrue(type(labels) == type([]))
 
-    def test_classifier_test(self):
-        # Read the test result from fasttext(1) using the same classifier model
+    def test_supervised_test(self):
+        # Read the test result from fasttext(1) using the same supervised model
         precision_at_one = 0.0
         nexamples = 0
         with open(test_result) as f:
@@ -249,8 +259,8 @@ class TestClassifierModel(unittest.TestCase):
             nexamples = int(lines[2][20:].strip())
 
         # Load and test using the same model and test set
-        classifier = ft.load_model(classifier_bin, label_prefix='__label__')
-        result = classifier.test(test_file, k=1)
+        supervised = ft.load_model(SUPERVISED_BINFILE, label_prefix='__label__')
+        result = supervised.test(test_file, k=1)
 
         # Make sure that the test result is the same as the result generated
         # by fasttext(1)
@@ -260,10 +270,10 @@ class TestClassifierModel(unittest.TestCase):
         self.assertEqual(r_at_1, recall_at_one)
         self.assertEqual(result.nexamples, nexamples)
 
-    def test_classifier_predict(self):
-        # Load the pre-trained classifier
+    def test_supervised_predict(self):
+        # Load the pre-trained supervised
         label_prefix = '__label__'
-        classifier = ft.load_model(classifier_bin, label_prefix=label_prefix)
+        supervised = ft.load_model(SUPERVISED_BINFILE, label_prefix=label_prefix)
 
         # Read prediction result from fasttext(1)
         fasttext_labels = read_labels_from_result(pred_result,
@@ -273,16 +283,16 @@ class TestClassifierModel(unittest.TestCase):
         texts = read_texts(pred_file)
 
         # Predict the labels
-        labels = classifier.predict(texts)
+        labels = supervised.predict(texts)
 
         # Make sure the returned labels are the same as predicted by
         # fasttext(1)
         self.assertTrue(labels == fasttext_labels)
 
-    def test_classifier_predict_k_best(self):
+    def test_supervised_predict_k_best(self):
         label_prefix = '__label__'
-        # Load the pre-trained classifier
-        classifier = ft.load_model(classifier_bin, label_prefix=label_prefix)
+        # Load the pre-trained supervised
+        supervised = ft.load_model(SUPERVISED_BINFILE, label_prefix=label_prefix)
 
         # Read prediction result from fasttext(1)
         fasttext_labels = read_labels_from_result(pred_k_result,
@@ -292,16 +302,16 @@ class TestClassifierModel(unittest.TestCase):
         texts = read_texts(pred_file)
 
         # Predict the k-best labels
-        labels = classifier.predict(texts, k=5)
+        labels = supervised.predict(texts, k=5)
 
         # Make sure the returned labels are the same as predicted by
         # fasttext(1)
         self.assertTrue(labels == fasttext_labels)
 
-    def test_classifier_predict_prob(self):
-        # Load the pre-trained classifier
+    def test_supervised_predict_prob(self):
+        # Load the pre-trained supervised
         label_prefix = '__label__'
-        classifier = ft.load_model(classifier_bin, label_prefix=label_prefix)
+        supervised = ft.load_model(SUPERVISED_BINFILE, label_prefix=label_prefix)
 
         # Read prediction result from fasttext(1)
         fasttext_labels = read_labels_from_result_prob(pred_prob_result,
@@ -311,16 +321,16 @@ class TestClassifierModel(unittest.TestCase):
         texts = read_texts(pred_file)
 
         # Predict the labels
-        labels = classifier.predict_proba(texts)
+        labels = supervised.predict_proba(texts)
 
         # Make sure the returned labels are the same as predicted by
         # fasttext(1)
         self.assertTrue(labels == fasttext_labels)
 
-    def test_classifier_predict_prob_k_best(self):
+    def test_supervised_predict_prob_k_best(self):
         label_prefix = '__label__'
-        # Load the pre-trained classifier
-        classifier = ft.load_model(classifier_bin, label_prefix=label_prefix)
+        # Load the pre-trained supervised
+        supervised = ft.load_model(SUPERVISED_BINFILE, label_prefix=label_prefix)
 
         # Read prediction result from fasttext(1)
         fasttext_labels = read_labels_from_result_prob(pred_prob_k_result,
@@ -330,7 +340,7 @@ class TestClassifierModel(unittest.TestCase):
         texts = read_texts(pred_file)
 
         # Predict the k-best labels
-        labels = classifier.predict_proba(texts, k=5)
+        labels = supervised.predict_proba(texts, k=5)
 
         # Make sure the returned labels are the same as predicted by
         # fasttext(1)

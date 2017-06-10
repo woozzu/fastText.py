@@ -1,7 +1,7 @@
 
 all: install test
 
-test: test-skipgram test-cbow test-classifier
+test: test-skipgram test-cbow test-supervised
 
 buildext:
 	python setup.py build_ext --inplace
@@ -75,51 +75,63 @@ test-cbow: pre-test fasttext/cpp/fasttext test/cbow_params_test.bin \
 		   test/cbow_default_params_result.txt
 	python test/cbow_test.py --verbose
 
-# Test for classifier
+# Test for supervised
 test/dbpedia.train: test/download_dbpedia.sh
 	sh test/download_dbpedia.sh # Download & normalize training file
 
 # Redirect stdout to /dev/null to prevent exceed the log limit size from
 # Travis CI
-test/classifier.bin: test/dbpedia.train
+# test/supervised.bin: test/dbpedia.train fasttext/cpp/fasttext
+# 	./fasttext/cpp/fasttext supervised -input test/dbpedia.train \
+# 		-output test/supervised -minCount 1 -minCountLabel 0 \
+# 		-wordNgrams 1 -bucket 200 -minn 0 -maxn 0 \
+# 		-t 0.0001 -label __label__ -lr 0.1 -lrUpdateRate 100 \
+# 		-dim 50 -ws 2 -epoch 1 -neg 1 -loss hs -thread 8 \
+# 		-cutoff 0 -retrain 0 -qnorm 0 -qout 0 -dsub 2 >> /dev/null
+test/supervised.bin: test/dbpedia.train fasttext/cpp/fasttext
 	./fasttext/cpp/fasttext supervised -input test/dbpedia.train \
-		-output test/classifier -dim 100 -lr 0.1 -wordNgrams 2 \
-		-minCount 1 -bucket 2000000 -epoch 5 -thread 4 >> /dev/null
+		-output test/supervised -minCount 1 -minCountLabel 0 \
+		-wordNgrams 1 -bucket 200 -minn 0 -maxn 0 \
+		-t 0.0001 -label __label__ -lr 0.1 -lrUpdateRate 100 \
+		-dim 50 -ws 2 -epoch 1 -neg 1 -loss hs -thread 8 >> /dev/null
 
-test/classifier_test_result.txt: test/classifier.bin
-	./fasttext/cpp/fasttext test test/classifier.bin \
-		test/classifier_test.txt > test/classifier_test_result.txt
+test/supervised_test_result.txt: test/supervised.bin
+	./fasttext/cpp/fasttext test test/supervised.bin \
+		test/supervised_test.txt > test/supervised_test_result.txt
 
-test/classifier_pred_result.txt: test/classifier.bin
-	./fasttext/cpp/fasttext predict test/classifier.bin \
-		test/classifier_pred_test.txt > \
-		test/classifier_pred_result.txt
+test/supervised_pred_result.txt: test/supervised.bin
+	./fasttext/cpp/fasttext predict test/supervised.bin \
+		test/supervised_pred_test.txt > \
+		test/supervised_pred_result.txt
 
-test/classifier_pred_k_result.txt: test/classifier.bin
-	./fasttext/cpp/fasttext predict test/classifier.bin \
-		test/classifier_pred_test.txt 5 > \
-		test/classifier_pred_k_result.txt
+test/supervised_pred_k_result.txt: test/supervised.bin
+	./fasttext/cpp/fasttext predict test/supervised.bin \
+		test/supervised_pred_test.txt 5 > \
+		test/supervised_pred_k_result.txt
 
-test/classifier_pred_prob_result.txt: test/classifier.bin
-	./fasttext/cpp/fasttext predict-prob test/classifier.bin \
-		test/classifier_pred_test.txt > \
-		test/classifier_pred_prob_result.txt
+test/supervised_pred_prob_result.txt: test/supervised.bin
+	./fasttext/cpp/fasttext predict-prob test/supervised.bin \
+		test/supervised_pred_test.txt > \
+		test/supervised_pred_prob_result.txt
 
-test/classifier_pred_prob_k_result.txt: test/classifier.bin
-	./fasttext/cpp/fasttext predict-prob test/classifier.bin \
-		test/classifier_pred_test.txt 5 > \
-		test/classifier_pred_prob_k_result.txt
+test/supervised_pred_prob_k_result.txt: test/supervised.bin
+	./fasttext/cpp/fasttext predict-prob test/supervised.bin \
+		test/supervised_pred_test.txt 5 > \
+		test/supervised_pred_prob_k_result.txt
 
-# Generate default value of classifier command from fasttext(1)
-test/classifier_default_params_result.txt:
-	$(MAKE) classifier_default_params_result.txt --directory test/
+# Generate default value of supervised command from fasttext(1)
+test/supervised_default_params_result.txt:
+	$(MAKE) supervised_default_params_result.txt --directory test/
 
-test-classifier: pre-test fasttext/cpp/fasttext test/classifier.bin \
-				 test/classifier_test_result.txt \
-				 test/classifier_pred_result.txt \
-				 test/classifier_pred_k_result.txt \
-				 test/classifier_pred_prob_result.txt \
-				 test/classifier_pred_prob_k_result.txt \
-				 test/classifier_default_params_result.txt
-	python test/classifier_test.py --verbose
+test-supervised-all: pre-test fasttext/cpp/fasttext test/supervised.bin \
+				 test/supervised_test_result.txt \
+				 test/supervised_pred_result.txt \
+				 test/supervised_pred_k_result.txt \
+				 test/supervised_pred_prob_result.txt \
+				 test/supervised_pred_prob_k_result.txt \
+				 test/supervised_default_params_result.txt
+	python test/supervised_test.py --verbose
 
+test-supervised-load-model: pre-test test/supervised.bin
+	python test/supervised_test.py \
+		TestsupervisedModel.test_load_supervised_model 
