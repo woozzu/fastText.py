@@ -16,7 +16,7 @@
 namespace fasttext {
 
 QMatrix::QMatrix() : qnorm_(false),
-  m_(0), n_(0), codesize_(0) {}
+  m_(0), n_(0), codesize_(0), codes_(nullptr) {}
 
 QMatrix::QMatrix(const Matrix& mat, int32_t dsub, bool qnorm)
       : qnorm_(qnorm), m_(mat.m_), n_(mat.n_),
