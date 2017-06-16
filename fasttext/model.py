@@ -39,29 +39,22 @@ class WordVectorModel(object):
 class SupervisedModel(object):
     def __init__(self, model, labels, label_prefix, encoding='utf-8'):
         self._model = model
-        self.labels = labels
-        self.min_count = model.minCount
-        self.min_count_label = model.minCountLabel
-        self.word_ngrams = model.wordNgrams
         self.bucket = model.bucket
-        self.minn = model.minn
-        self.maxn = model.maxn
-        self.t = model.t
-        self.lr = model.lr
-        self.lr_update_rate = model.lrUpdateRate
         self.dim = model.dim
-        self.ws = model.ws
-        self.epoch = model.epoch
-        self.neg = model.neg
-        self.loss_name = model.lossName.decode(encoding)
-        self.model_name = model.modelName.decode(encoding)
-        self.label_prefix = label_prefix
         self.encoding = encoding
-        self.cutoff = model.cutoff
-        self.retrain = model.retrain
-        self.qnorm = model.qnorm
-        self.qout = model.qout
-        self.dsub = model.dsub
+        self.epoch = model.epoch
+        self.label_prefix = label_prefix
+        self.labels = labels
+        self.loss_name = model.lossName.decode(encoding)
+        self.lr_update_rate = model.lrUpdateRate
+        self.maxn = model.maxn
+        self.min_count = model.minCount
+        self.minn = model.minn
+        self.model_name = model.modelName.decode(encoding)
+        self.neg = model.neg
+        self.t = model.t
+        self.word_ngrams = model.wordNgrams
+        self.ws = model.ws
 
     # def test(self, test_file, k=1):
     #     return self._model.classifier_test(test_file, k, self.encoding)

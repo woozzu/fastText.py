@@ -26,10 +26,6 @@ cdef class FastTextWrapper:
         return self.fm.minCount
 
     @property
-    def minCountLabel(self):
-        return self.fm.minCountLabel
-
-    @property
     def wordNgrams(self):
         return self.fm.wordNgrams
 
@@ -48,10 +44,6 @@ cdef class FastTextWrapper:
     @property
     def t(self):
         return self.fm.t
-
-    @property
-    def lr(self):
-        return self.fm.lrUpdateRate
 
     @property
     def lrUpdateRate(self):
@@ -80,26 +72,6 @@ cdef class FastTextWrapper:
     @property
     def modelName(self):
         return self.fm.modelName
-
-    @property
-    def cutoff(self):
-        return self.fm.cutoff
-
-    @property
-    def retrain(self):
-        return self.fm.retrain
-
-    @property
-    def qnorm(self):
-        return self.fm.qnorm
-
-    @property
-    def qout(self):
-        return self.fm.qout
-
-    @property
-    def dsub(self):
-        return self.fm.dsub
 
     def dict_nlabels(self):
         return self.fm.dictGetNLabels()   
@@ -135,16 +107,13 @@ def load_model(filename, label_prefix='', encoding='utf-8'):
         raise Exception('fastText: Cannot load ' + filename +
                 ' due to ' + str(err))
 
-    print 'DEBUG: model loaded'
     model_name = model.fm.modelName
     if model_name == 'supervised':
-        print('DEBUG: fasttext.pyx: supervised model')
         labels = []
         for i in xrange(model.dict_nlabels()):
             label = model.dict_get_label(i, encoding)
             # Remove the prefix
             labels.append(label.replace(label_prefix, ''))
-        print('DEBUG: fasttext.pyx: return SupervisedModel')
         return SupervisedModel(model, labels, label_prefix, encoding)
     else:
         raise ValueError('fastText: model name is not valid!')

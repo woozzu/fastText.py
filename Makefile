@@ -81,17 +81,10 @@ test/dbpedia.train: test/download_dbpedia.sh
 
 # Redirect stdout to /dev/null to prevent exceed the log limit size from
 # Travis CI
-# test/supervised.bin: test/dbpedia.train fasttext/cpp/fasttext
-# 	./fasttext/cpp/fasttext supervised -input test/dbpedia.train \
-# 		-output test/supervised -minCount 1 -minCountLabel 0 \
-# 		-wordNgrams 1 -bucket 200 -minn 0 -maxn 0 \
-# 		-t 0.0001 -label __label__ -lr 0.1 -lrUpdateRate 100 \
-# 		-dim 50 -ws 2 -epoch 1 -neg 1 -loss hs -thread 8 \
-# 		-cutoff 0 -retrain 0 -qnorm 0 -qout 0 -dsub 2 >> /dev/null
 test/supervised.bin: test/dbpedia.train fasttext/cpp/fasttext
 	./fasttext/cpp/fasttext supervised -input test/dbpedia.train \
 		-output test/supervised -minCount 1 -minCountLabel 0 \
-		-wordNgrams 1 -bucket 200 -minn 0 -maxn 0 \
+		-wordNgrams 1 -minn 0 -maxn 0 \
 		-t 0.0001 -label __label__ -lr 0.1 -lrUpdateRate 100 \
 		-dim 50 -ws 2 -epoch 1 -neg 1 -loss hs -thread 8 >> /dev/null
 

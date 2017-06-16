@@ -118,21 +118,20 @@ class TestsupervisedModel(unittest.TestCase):
 
         # Make sure all params are loaded correctly
         # see Makefile on target test/supervised.bin
-        self.assertEqual(model.min_count, 1)
-        self.assertEqual(model.min_count_label, 0)
-        self.assertEqual(model.word_ngrams, 1)
-        self.assertEqual(model.bucket, 200)
-        self.assertEqual(model.minn, 0)
-        self.assertEqual(model.maxn, 0)
-        self.assertEqual(model.t, 0.001)
-        self.assertEqual(model.lr, 0.1)
-        self.assertEqual(model.lr_update_rate, 100)
+        # We only test the saved parameters
+        self.assertEqual(model.bucket, 0) # because wordNgrams <= 1 and minn=0
         self.assertEqual(model.dim, 50)
-        self.assertEqual(model.ws, 2)
         self.assertEqual(model.epoch, 1)
-        self.assertEqual(model.neg, 1)
-        self.assertEqual(model.loss_name, "hs")
         self.assertEqual(model.label_prefix, label_prefix)
+        self.assertEqual(model.loss_name, "hs")
+        self.assertEqual(model.lr_update_rate, 100)
+        self.assertEqual(model.maxn, 0)
+        self.assertEqual(model.min_count, 1)
+        self.assertEqual(model.minn, 0)
+        self.assertEqual(model.neg, 1)
+        self.assertEqual(model.t, 0.0001)
+        self.assertEqual(model.word_ngrams, 1)
+        self.assertEqual(model.ws, 2)
 
         # Read labels from the the input_file
         labels = read_labels_from_input(input_file, label_prefix)
