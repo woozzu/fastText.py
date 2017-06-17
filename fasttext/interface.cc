@@ -119,6 +119,7 @@ namespace interface {
         return labels;
     }
 
+    /* Interface for ./fasttext predict-prob */
     std::vector<std::vector<std::string>>
     FastTextModel::predictProb(std::string text, int32_t k)
     {
@@ -144,5 +145,28 @@ namespace interface {
             results.push_back(result);
         }
         return results;
+    }
+
+    /* Interface for ./fasttext test */
+    std::string FastTextModel::test(std::string filename, int32_t k)
+    {
+        std::ifstream ifs(filename);
+        if (!ifs.is_open()) {
+            std::cerr << "interface.cc: Test file cannot be opened!" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+        /* Get the current output stream */
+        std::streambuf* old_ofs = std::cout.rdbuf();
+        /* Initialize new string stream; to save the test output */
+        std::stringstream buffer;
+        /* Redirect the std::cout to buffer */
+        std::cout.rdbuf(buffer.rdbuf());
+        /* Run the test */
+        _fasttext->test(ifs, k);
+        /* Restore the output stream */
+        std::cout.rdbuf(old_ofs);
+        /* Convert buffer to plain string */
+        std::string test_output = buffer.str();
+        return test_output;
     }
 }

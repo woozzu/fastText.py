@@ -37,3 +37,4 @@ cdef extern from "interface.h" namespace "interface":
 
         vector[string] predict(string text, int32_t k)
         vector[vector[string]] predictProb(string text, int32_t k)
+        string test(string filename, int32_t k)

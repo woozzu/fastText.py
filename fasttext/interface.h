@@ -48,6 +48,7 @@ namespace interface {
             std::vector<std::string> predict(std::string text, int32_t k);
             std::vector<std::vector<std::string>> predictProb(std::string text,
                 int32_t k);
+            std::string test(std::string filename, int32_t k);
     };
 }
 

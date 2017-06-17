@@ -56,8 +56,8 @@ class SupervisedModel(object):
         self.word_ngrams = model.wordNgrams
         self.ws = model.ws
 
-    # def test(self, test_file, k=1):
-    #     return self._model.classifier_test(test_file, k, self.encoding)
+    def test(self, test_file, k=1):
+        return self._model.test(test_file, k, self.encoding)
 
     def predict(self, texts, k=1):
         all_labels = []
@@ -80,7 +80,7 @@ class SupervisedModel(object):
         return results
 
 # Class for test result
-class ClassifierTestResult(object):
+class SupervisedTestResult(object):
     def __init__(self, precision, recall, nexamples):
         self.precision = precision
         self.recall = recall
