@@ -10,10 +10,13 @@ if platform == "darwin":
 else:
     extra_compile_args = ['-O3', '-pthread', '-funroll-loops', '-std=c++0x']
 
+# https://docs.python.org/2/distutils/apiref.html#distutils.core.Extension
 extensions = [
-    Extension('*',
+    Extension(
+        name='fasttext.fasttext',
         sources=[
             'fasttext/fasttext.pyx',
+            'fasttext/interface.pxd',
             'fasttext/interface.cc',
             'fasttext/cpp/src/args.cc',
             'fasttext/cpp/src/dictionary.cc',
@@ -27,7 +30,8 @@ extensions = [
             'fasttext/cpp/src/vector.cc'
         ],
         language='c++',
-        extra_compile_args=extra_compile_args)
+        extra_compile_args=extra_compile_args,
+        include_dirs=['fasttext', 'fasttext/cpp'])
 ]
 
 # Package details
