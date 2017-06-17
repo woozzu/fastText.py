@@ -4,3 +4,4 @@ global-include *.cc
 global-include *.h
 
 prune facebookresearch-fastText-*
+prune *.tar.gz
