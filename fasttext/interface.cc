@@ -1,11 +1,13 @@
 /* An interface for fastText */
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 
 #include "interface.h"
 #include "cpp/src/fasttext.h"
 #include "cpp/src/dictionary.h"
+#include "cpp/src/real.h"
 
 namespace interface {
     FastTextModel::FastTextModel(){}
@@ -34,17 +36,15 @@ namespace interface {
         _fasttext = ft;
 
         // We need to re-check the model to read the args and the dictionary
-        std::cout << "interface.cc: Load model done." << std::endl;
         std::ifstream ifs(filename, std::ifstream::binary);
         if (!checkModel(ifs)) {
-            std::cerr << "Model file has wrong file format!" << std::endl;
+            std::cerr << "interface.cc: Model file has wrong file format!" << std::endl;
             exit(EXIT_FAILURE);
         }
 
         // Load model parameters
         std::shared_ptr<fasttext::Args> args = std::make_shared<fasttext::Args>();
         args->load(ifs);
-
         bucket = args->bucket;
         cutoff = args->cutoff;
         dim = args->dim;
@@ -98,5 +98,51 @@ namespace interface {
     std::string FastTextModel::dictGetLabel(int32_t i)
     {
         return _dict->getLabel(i);
+    }
+
+    /* Interface for ./fasttext predict */
+    std::vector<std::string> 
+    FastTextModel::predict(std::string text, int32_t k)
+    {
+        /* Convert string into input stream */
+        std::istringstream in(text);
+
+        /* Run the prediction */
+        std::vector<std::pair<fasttext::real,std::string>> predictions;
+        _fasttext->predict(in, k, predictions);
+
+        /* Forward the label */
+        std::vector<std::string> labels;
+        for(auto it = predictions.cbegin(); it != predictions.cend(); it++) {
+            labels.push_back(it->second);
+        }
+        return labels;
+    }
+
+    std::vector<std::vector<std::string>>
+    FastTextModel::predictProb(std::string text, int32_t k)
+    {
+        /* Convert string into input stream */
+        std::istringstream in(text);
+
+        /* Run the prediction */
+        std::vector<std::pair<fasttext::real,std::string>> predictions;
+        _fasttext->predict(in, k, predictions);
+
+        /* Forward the results */
+        std::vector<std::vector<std::string>> results;
+        for(auto it = predictions.cbegin(); it != predictions.cend(); it++) {
+            std::vector<std::string> result;
+            result.push_back(it->second);
+
+            /* We use string stream here instead of to_string, to make sure
+             * that the string is consistent with std::cout from fasttext(1) */
+            std::ostringstream probability_stream;
+            probability_stream << exp(it->first);
+            result.push_back(probability_stream.str());
+
+            results.push_back(result);
+        }
+        return results;
     }
 }

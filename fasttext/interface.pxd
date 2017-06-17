@@ -3,6 +3,7 @@
 from libcpp.string cimport string
 from libc.stdint cimport int32_t
 from libcpp cimport bool
+from libcpp.vector cimport vector
 
 cdef extern from "interface.h" namespace "interface":
     cdef cppclass FastTextModel:
@@ -33,3 +34,6 @@ cdef extern from "interface.h" namespace "interface":
         void loadModel(string filename)
         int32_t dictGetNLabels()
         string dictGetLabel(int32_t i)
+
+        vector[string] predict(string text, int32_t k)
+        vector[vector[string]] predictProb(string text, int32_t k)
