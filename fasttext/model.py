@@ -59,25 +59,25 @@ class SupervisedModel(object):
     # def test(self, test_file, k=1):
     #     return self._model.classifier_test(test_file, k, self.encoding)
 
-    # def predict(self, texts, k=1):
-    #     all_labels = []
-    #     for text in texts:
-    #         if text[-1] != '\n':
-    #             text += '\n'
-    #         labels = self._model.classifier_predict(text, k,
-    #                 self.label_prefix, self.encoding)
-    #         all_labels.append(labels)
-    #     return all_labels
+    def predict(self, texts, k=1):
+        all_labels = []
+        for text in texts:
+            if text[-1] != '\n':
+                text += '\n'
+            labels = self._model.predict(text, k,
+                        self.label_prefix, self.encoding)
+            all_labels.append(labels)
+        return all_labels
 
-    # def predict_proba(self, texts, k=1):
-    #     results = []
-    #     for text in texts:
-    #         if text[-1] != '\n':
-    #             text += '\n'
-    #         result = self._model.classifier_predict_prob(text, k,
-    #                 self.label_prefix, self.encoding)
-    #         results.append(result)
-    #     return results
+    def predict_proba(self, texts, k=1):
+        results = []
+        for text in texts:
+            if text[-1] != '\n':
+                text += '\n'
+            result = self._model.predict_prob(text, k,
+                    self.label_prefix, self.encoding)
+            results.append(result)
+        return results
 
 # Class for test result
 class ClassifierTestResult(object):
