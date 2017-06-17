@@ -37,7 +37,7 @@ pre-test:
 	rm -f test/*.vec test/*.bin test/*_result.txt
 .PHONY: pre-test
 
-fasttext/cpp/fasttext:
+fasttext/cpp/fasttext: fasttext/cpp/src/*.h fasttext/cpp/src/*.cc
 	rm -f fasttext/cpp/fasttext
 	make --directory fasttext/cpp/
 
@@ -116,7 +116,7 @@ test/supervised_pred_prob_k_result.txt: test/supervised.bin
 test/supervised_default_params_result.txt:
 	$(MAKE) supervised_default_params_result.txt --directory test/
 
-test-supervised-all: pre-test fasttext/cpp/fasttext test/supervised.bin \
+test-supervised: pre-test fasttext/cpp/fasttext test/supervised.bin \
 				 test/supervised_test_result.txt \
 				 test/supervised_pred_result.txt \
 				 test/supervised_pred_k_result.txt \
