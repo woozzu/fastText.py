@@ -5,6 +5,9 @@ from libc.stdint cimport int32_t
 from libcpp cimport bool
 from libcpp.vector cimport vector
 
+cdef extern from "cpp/src/real.h" namespace "fasttext":
+    ctypedef float real
+
 cdef extern from "interface.h" namespace "interface":
     cdef cppclass FastTextModel:
         FastTextModel()
@@ -32,8 +35,11 @@ cdef extern from "interface.h" namespace "interface":
         string modelName;
 
         void loadModel(string filename)
+        int32_t dictGetNWords()
+        string dictGetWord(int32_t i)
         int32_t dictGetNLabels()
         string dictGetLabel(int32_t i)
+        vector[real] getVectorWrapper(string word)
 
         vector[string] predict(string text, int32_t k)
         vector[vector[string]] predictProb(string text, int32_t k)

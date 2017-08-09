@@ -8,6 +8,7 @@ from libcpp.vector cimport vector
 # Python module
 import os
 from builtins import bytes
+from model import WordVectorModel
 from model import SupervisedModel
 from model import SupervisedTestResult as TestResult
 
@@ -75,6 +76,14 @@ cdef class FastTextWrapper:
     def modelName(self):
         return self.fm.modelName
 
+    def dict_nwords(self):
+        return self.fm.dictGetNWords()   
+
+    def dict_get_word(self, i, encoding):
+        cdef string cpp_string
+        cpp_string = self.fm.dictGetWord(i)
+        return cpp_string.decode(encoding)
+
     def dict_nlabels(self):
         return self.fm.dictGetNLabels()   
 
@@ -83,10 +92,9 @@ cdef class FastTextWrapper:
         cpp_string = self.fm.dictGetLabel(i)
         return cpp_string.decode(encoding)
 
-    def dict_get_label(self, i, encoding):
-        cdef string cpp_string
-        cpp_string = self.fm.dictGetLabel(i)
-        return cpp_string.decode(encoding)
+    def get_vector(self, word, encoding):
+        word_bytes = bytes(word, encoding)
+        return self.fm.getVectorWrapper(word_bytes)
 
     def predict(self, text, k, label_prefix, encoding):
         cdef vector[string] raw_labels
@@ -148,7 +156,14 @@ def load_model(filename, label_prefix='', encoding='utf-8'):
                 ' due to ' + str(err))
 
     model_name = model.fm.modelName
-    if model_name == 'supervised':
+    if model_name == 'skipgram' or model_name == 'cbow':
+        words = []
+        # We build the dictionary here to support unicode characters
+        for i in xrange(model.dict_nwords()):
+            word = model.dict_get_word(i, encoding)
+            words.append(word)
+        return WordVectorModel(model, words, encoding)
+    elif model_name == 'supervised':
         labels = []
         for i in xrange(model.dict_nlabels()):
             label = model.dict_get_label(i, encoding)

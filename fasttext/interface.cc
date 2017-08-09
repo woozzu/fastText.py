@@ -7,6 +7,7 @@
 #include "interface.h"
 #include "cpp/src/fasttext.h"
 #include "cpp/src/dictionary.h"
+#include "cpp/src/vector.h"
 #include "cpp/src/real.h"
 
 namespace interface {
@@ -90,6 +91,16 @@ namespace interface {
         _dict = dict;
     }
 
+    int32_t FastTextModel::dictGetNWords()
+    {
+        return _dict->nwords();
+    }
+
+    std::string FastTextModel::dictGetWord(int32_t i)
+    {
+        return _dict->getWord(i);
+    }
+
     int32_t FastTextModel::dictGetNLabels()
     {
         return _dict->nlabels();
@@ -98,6 +109,14 @@ namespace interface {
     std::string FastTextModel::dictGetLabel(int32_t i)
     {
         return _dict->getLabel(i);
+    }
+
+    std::vector<fasttext::real> FastTextModel::getVectorWrapper(std::string word)
+    {
+        fasttext::Vector vec(dim);
+        _fasttext->getVector(vec, word);
+        std::vector<fasttext::real> vector(vec.data_, vec.data_ + vec.m_);
+        return vector;
     }
 
     /* Interface for ./fasttext predict */

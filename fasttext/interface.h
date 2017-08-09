@@ -7,6 +7,7 @@
 
 #include "cpp/src/fasttext.h"
 #include "cpp/src/dictionary.h"
+#include "cpp/src/real.h"
 
 /* We create this to mimic cpp/src/fasttext.h to gain access on the private 
  * data like arguments and dictionary */
@@ -43,8 +44,11 @@ namespace interface {
             std::string modelName;
 
             void loadModel(std::string filename);
+            int32_t dictGetNWords();
+            std::string dictGetWord(int32_t i);
             int32_t dictGetNLabels();
             std::string dictGetLabel(int32_t i);
+            std::vector<fasttext::real> getVectorWrapper(std::string word);
             std::vector<std::string> predict(std::string text, int32_t k);
             std::vector<std::vector<std::string>> predictProb(std::string text,
                 int32_t k);
